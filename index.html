@@ -7,209 +7,289 @@
 <style>
 *{box-sizing:border-box}
 body{
-  margin:0;font-family:"Microsoft YaHei",sans-serif;
-  background:#fff8e9;color:#514536;
+  margin:0;
+  font-family:"Microsoft YaHei",Arial,sans-serif;
+  background:#fff9ed;
+  color:#51412f;
 }
 header{
-  background:#ffcb70;padding:24px 16px;text-align:center;
+  background:linear-gradient(135deg,#ffcf55,#ffad35);
+  text-align:center;
+  padding:35px 15px;
   border-radius:0 0 28px 28px;
 }
-header h1{margin:5px;font-size:28px;color:#754c26}
-header p{margin:8px}
-main{max-width:760px;margin:22px auto;padding:0 16px}
-h2{font-size:19px}
-.grades{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
-button{
-  border:0;border-radius:14px;padding:12px;
-  background:#fff;cursor:pointer;font-size:15px;
-  color:#514536;box-shadow:0 2px 7px #00000010;
-}
-button:active{transform:scale(.97)}
-.grades button.active{background:#ffb84e;color:white}
-.card{
-  margin-top:20px;background:white;border-radius:24px;
-  padding:25px 18px;text-align:center;
-  box-shadow:0 5px 18px #00000010;
-}
-.emoji{font-size:65px;margin:12px}
-.word{font-size:35px;font-weight:bold;color:#f19b38}
-.meaning{font-size:21px;margin:12px}
-.sub{color:#999;font-size:14px}
-.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
-.actions button{background:#fff0d6}
-.primary{background:#ffb84e!important;color:white!important}
-.section{
-  background:white;margin-top:20px;padding:20px;
+header h1{font-size:30px;margin:8px}
+header p{margin:8px;color:#79521f}
+.mascot{font-size:48px}
+main{max-width:850px;margin:25px auto;padding:0 16px}
+.panel{
+  background:white;
+  padding:22px;
   border-radius:22px;
+  margin-bottom:20px;
+  box-shadow:0 5px 18px #e8d8bd55;
 }
-.options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.options button{border:1px solid #f2e5d3}
-.result{margin-top:14px;font-weight:bold;text-align:center}
-footer{text-align:center;padding:25px;color:#ad9679;font-size:13px}
+h2{font-size:19px;margin-top:0}
+button,select{
+  border:0;
+  border-radius:13px;
+  padding:12px 17px;
+  font-size:15px;
+  cursor:pointer;
+}
+button{background:#fff0ce;color:#75501f;margin:4px}
+button:hover{background:#ffe1a1}
+button.active,.primary{
+  background:#ffb735;
+  color:white;
+}
+.grade-list,.book-list,.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.grade-list button,.book-list button{flex:1;min-width:90px}
+.word-card{
+  text-align:center;
+  background:#fffaf1;
+  border-radius:20px;
+  padding:25px 12px;
+}
+.word-picture{font-size:75px}
+.word{
+  font-size:38px;
+  font-weight:bold;
+  color:#e99a29;
+  margin:12px;
+}
+.meaning{font-size:23px;margin:10px}
+.example{color:#99836a;font-size:14px}
+.hidden{visibility:hidden}
+.progress{
+  height:12px;background:#eee5d9;
+  border-radius:20px;overflow:hidden;
+}
+.progress div{
+  height:100%;width:0;background:#ffb735;
+  transition:.3s;
+}
+.quiz-option{
+  display:block;width:100%;
+  background:#fff7e8;margin:9px 0;
+  text-align:left;
+}
+.quiz-option:disabled{opacity:.75;cursor:default}
+#feedback{font-weight:bold;min-height:28px;margin-top:10px}
+.stats{
+  display:flex;justify-content:space-around;
+  text-align:center;gap:10px;
+}
+.stats strong{display:block;font-size:25px;color:#e99a29}
+footer{text-align:center;color:#a18c70;padding:25px;font-size:13px}
+@media(max-width:520px){
+ header h1{font-size:25px}
+ .panel{padding:16px}
+ .word{font-size:32px}
+ button{padding:11px 12px}
+}
 </style>
 </head>
 <body>
 
 <header>
-  <div style="font-size:42px">🦊 📚 ⭐</div>
+  <div class="mascot">🦊 📚 ⭐</div>
   <h1>ABC 快乐单词屋</h1>
   <p>每天学一点，英语进步看得见！</p>
 </header>
 
 <main>
-  <h2>🌈 选择你的年级</h2>
-  <div class="grades">
-    <button class="active" onclick="changeGrade(3,this)">三年级</button>
-    <button onclick="changeGrade(4,this)">四年级</button>
-    <button onclick="changeGrade(5,this)">五年级</button>
-    <button onclick="changeGrade(6,this)">六年级</button>
-  </div>
 
-  <div class="card">
-    <div class="sub" id="progress">三年级 · 单词学习</div>
-    <div class="emoji" id="emoji">🐱</div>
+<section class="panel">
+  <h2>🌈 选择你的年级</h2>
+  <div class="grade-list" id="grades">
+    <button class="active" onclick="chooseGrade(3,this)">三年级</button>
+    <button onclick="chooseGrade(4,this)">四年级</button>
+    <button onclick="chooseGrade(5,this)">五年级</button>
+    <button onclick="chooseGrade(6,this)">六年级</button>
+  </div>
+  <h2 style="margin-top:22px">📖 选择教材册次</h2>
+  <div class="book-list">
+    <button class="active" onclick="chooseBook('上册',this)">上册</button>
+    <button onclick="chooseBook('下册',this)">下册</button>
+  </div>
+  <p id="selection">当前选择：三年级上册</p>
+</section>
+
+<section class="panel">
+  <h2>📚 今日单词学习</h2>
+  <p id="unit">演示词汇 · 待核对教材单元</p>
+  <div class="word-card">
+    <div class="word-picture" id="picture">🐱</div>
     <div class="word" id="word">cat</div>
     <div class="meaning" id="meaning">小猫</div>
-    <div class="sub" id="example">I like cats.</div>
-    <div class="actions">
-      <button onclick="speak()">🔊 听发音</button>
-      <button onclick="toggleMeaning()">👀 隐藏释义</button>
+    <div class="example" id="example">I like cats.</div>
+    <div class="actions" style="justify-content:center;margin-top:20px">
+      <button class="primary" onclick="speak()">🔊 听发音</button>
+      <button onclick="toggleMeaning()">🙈 隐藏释义</button>
       <button onclick="nextWord()">➡️ 下一个</button>
     </div>
   </div>
+  <p style="margin-top:20px">🌟 今日学习进度</p>
+  <div class="progress"><div id="progressBar"></div></div>
+  <p id="progressText">已经学习 0 个单词</p>
+</section>
 
-  <div class="section">
-    <h2>🎮 趣味小测试</h2>
-    <p id="question">cat 的中文意思是什么？</p>
-    <div class="options" id="options"></div>
-    <div class="result" id="result">答对题目可以获得星星哦！</div>
-    <div style="text-align:center;margin-top:14px">
-      <button class="primary" onclick="newQuestion()">换一道题</button>
-    </div>
-  </div>
+<section class="panel">
+  <h2>🎮 趣味小测试</h2>
+  <p id="question">单词 bird 的中文意思是什么？</p>
+  <div id="options"></div>
+  <div id="feedback"></div>
+  <p id="score">⭐ 答对数量：0</p>
+  <button class="primary" onclick="newQuestion()">换一道题</button>
+</section>
 
-  <div class="section" style="text-align:center">
-    <div style="font-size:35px">🏆 ⭐</div>
-    <h2>我的学习成果</h2>
-    <p id="score">答对次数：0 次</p>
+<section class="panel">
+  <h2>🏆 我的学习成果</h2>
+  <div class="stats">
+    <div><strong id="learned">0</strong>学习单词</div>
+    <div><strong id="stars">0</strong>获得星星</div>
+    <div><strong id="correct">0</strong>答对题目</div>
   </div>
+</section>
+
 </main>
 
-<footer>ABC快乐单词屋 · 让英语学习更有趣 ❤️</footer>
+<footer>
+  ABC快乐单词屋 · 让英语学习变得有趣！<br>
+  教材词汇将依据正式教材逐册核对补充。
+</footer>
 
 <script>
-const books = {
-  3:[
-    ["cat","小猫","🐱","I like cats."],
-    ["dog","小狗","🐶","This is a dog."],
-    ["apple","苹果","🍎","I like apples."],
-    ["book","书","📚","This is my book."],
-    ["bird","小鸟","🐦","A bird can fly."]
-  ],
-  4:[
-    ["school","学校","🏫","I go to school."],
-    ["friend","朋友","👫","He is my friend."],
-    ["family","家庭","👨‍👩‍👧","I love my family."],
-    ["water","水","💧","I drink water."],
-    ["happy","开心的","😊","I am happy."]
-  ],
-  5:[
-    ["animal","动物","🐼","I love animals."],
-    ["weather","天气","🌤️","The weather is nice."],
-    ["library","图书馆","📚","I read in the library."],
-    ["beautiful","美丽的","🌸","It is beautiful."],
-    ["holiday","假期","🏖️","I like holidays."]
-  ],
-  6:[
-    ["museum","博物馆","🏛️","Let's visit the museum."],
-    ["science","科学","🔬","I like science."],
-    ["travel","旅行","✈️","I want to travel."],
-    ["healthy","健康的","💪","Keep healthy."],
-    ["interesting","有趣的","🎨","It is interesting."]
-  ]
-};
+const words=[
+ {en:"cat",cn:"小猫",pic:"🐱",example:"I like cats."},
+ {en:"dog",cn:"小狗",pic:"🐶",example:"This is a dog."},
+ {en:"bird",cn:"小鸟",pic:"🐦",example:"I see a bird."},
+ {en:"apple",cn:"苹果",pic:"🍎",example:"I like apples."},
+ {en:"book",cn:"书",pic:"📚",example:"This is my book."},
+ {en:"fish",cn:"鱼",pic:"🐟",example:"I like fish."}
+];
 
-let grade=3,index=0,correct=0,answered=false;
-let currentQuestion=null;
+let grade=3;
+let book="上册";
+let index=0;
+let learned=0;
+let stars=0;
+let correct=0;
+let answered=false;
+let seen=new Set();
 
-function changeGrade(g,btn){
-  grade=g;index=0;
-  document.querySelectorAll(".grades button").forEach(b=>b.classList.remove("active"));
-  btn.classList.add("active");
-  showWord();newQuestion();
+function chooseGrade(n,btn){
+ grade=n;
+ document.querySelectorAll("#grades button").forEach(b=>b.classList.remove("active"));
+ btn.classList.add("active");
+ updateSelection();
 }
-
+function chooseBook(n,btn){
+ book=n;
+ document.querySelectorAll(".book-list button").forEach(b=>b.classList.remove("active"));
+ btn.classList.add("active");
+ updateSelection();
+}
+function updateSelection(){
+ document.getElementById("selection").textContent=
+ "当前选择："+grade+"年级"+book;
+}
 function showWord(){
-  let w=books[grade][index];
-  document.getElementById("word").textContent=w[0];
-  document.getElementById("emoji").textContent=w[2];
-  document.getElementById("meaning").textContent=w[1];
-  document.getElementById("example").textContent=w[3];
-  document.getElementById("progress").textContent=
-    grade+"年级 · 第"+(index+1)+"个单词";
-  document.getElementById("meaning").style.display="block";
+ let w=words[index];
+ document.getElementById("word").textContent=w.en;
+ document.getElementById("meaning").textContent=w.cn;
+ document.getElementById("meaning").classList.remove("hidden");
+ document.getElementById("picture").textContent=w.pic;
+ document.getElementById("example").textContent=w.example;
+ document.getElementById("unit").textContent=
+ "演示词汇 · "+grade+"年级"+book;
+ if(!seen.has(w.en)){
+  seen.add(w.en);
+  learned++;
+  save();
+ }
+ document.getElementById("progressBar").style.width=
+ (seen.size/words.length*100)+"%";
+ document.getElementById("progressText").textContent=
+ "已经学习 "+seen.size+" 个不同的演示单词";
 }
-
 function nextWord(){
-  index=(index+1)%books[grade].length;
-  showWord();
+ index=(index+1)%words.length;
+ showWord();
 }
-
-function toggleMeaning(){
-  let m=document.getElementById("meaning");
-  m.style.display=m.style.display==="none"?"block":"none";
-}
-
 function speak(){
-  if(!("speechSynthesis" in window)){
-    alert("当前浏览器暂不支持语音播放");
-    return;
-  }
-  let utterance=new SpeechSynthesisUtterance(
-    books[grade][index][0]
-  );
-  utterance.lang="en-US";
-  utterance.rate=0.8;
-  speechSynthesis.cancel();
-  speechSynthesis.speak(utterance);
+ let text=words[index].en;
+ if(!("speechSynthesis" in window)){
+  alert("当前浏览器不支持语音功能");
+  return;
+ }
+ speechSynthesis.cancel();
+ let utterance=new SpeechSynthesisUtterance(text);
+ utterance.lang="en-US";
+ utterance.rate=0.8;
+ speechSynthesis.speak(utterance);
 }
-
+function toggleMeaning(){
+ document.getElementById("meaning").classList.toggle("hidden");
+}
+function save(){
+ localStorage.setItem("abc-stars",stars);
+ localStorage.setItem("abc-learned",learned);
+ localStorage.setItem("abc-correct",correct);
+ localStorage.setItem("abc-seen",JSON.stringify([...seen]));
+ updateStats();
+}
+function updateStats(){
+ document.getElementById("learned").textContent=learned;
+ document.getElementById("stars").textContent=stars;
+ document.getElementById("correct").textContent=correct;
+ document.getElementById("score").textContent="⭐ 答对数量："+correct;
+}
 function newQuestion(){
-  answered=false;
-  let all=books[grade];
-  let q=all[Math.floor(Math.random()*all.length)];
-  currentQuestion=q;
-  document.getElementById("question").textContent=
-    "单词 "+q[0]+" 的中文意思是什么？";
-  let others=all.filter(w=>w!==q);
-  others.sort(()=>Math.random()-0.5);
-  let choices=[q,...others.slice(0,3)];
-  choices.sort(()=>Math.random()-0.5);
-  let box=document.getElementById("options");
-  box.innerHTML="";
-  choices.forEach(w=>{
-    let b=document.createElement("button");
-    b.textContent=w[1];
-    b.onclick=()=>checkAnswer(w,b);
-    box.appendChild(b);
-  });
-  document.getElementById("result").textContent="选一个你认为正确的答案吧！";
+ answered=false;
+ let choices=[...words].sort(()=>Math.random()-.5).slice(0,4);
+ let answer=choices[Math.floor(Math.random()*choices.length)];
+ document.getElementById("question").textContent=
+ "单词 "+answer.en+" 的中文意思是什么？";
+ let box=document.getElementById("options");
+ box.innerHTML="";
+ choices.sort(()=>Math.random()-.5).forEach(w=>{
+  let b=document.createElement("button");
+  b.className="quiz-option";
+  b.textContent=w.cn;
+  b.onclick=()=>checkAnswer(w.en===answer.en,b,box,answer.cn);
+  box.appendChild(b);
+ });
+ document.getElementById("feedback").textContent="";
 }
-
-function checkAnswer(w,btn){
-  if(answered)return;
-  answered=true;
-  if(w===currentQuestion){
-    correct++;
-    document.getElementById("result").textContent="🎉 太棒了！答对啦！+1颗星星";
-  }else{
-    document.getElementById("result").textContent=
-      "💪 再接再厉！正确答案是："+currentQuestion[1];
-  }
-  document.getElementById("score").textContent=
-    "答对次数："+correct+" 次";
+function checkAnswer(ok,btn,box,answer){
+ if(answered)return;
+ answered=true;
+ if(ok){
+  correct++;
+  stars++;
+  document.getElementById("feedback").textContent="🎉 太棒了！答对啦！获得一颗星星！";
+ }else{
+  document.getElementById("feedback").textContent="💪 再接再厉！正确答案是："+answer;
+ }
+ box.querySelectorAll("button").forEach(b=>b.disabled=true);
+ save();
 }
-
+function load(){
+ learned=Number(localStorage.getItem("abc-learned")||0);
+ stars=Number(localStorage.getItem("abc-stars")||0);
+ correct=Number(localStorage.getItem("abc-correct")||0);
+ try{
+  seen=new Set(JSON.parse(localStorage.getItem("abc-seen")||"[]"));
+ }catch(e){seen=new Set();}
+ updateStats();
+}
+load();
 showWord();
 newQuestion();
 </script>
