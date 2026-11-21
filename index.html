@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ABC快乐单词屋</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;font-family:"Microsoft YaHei",sans-serif;
+  background:#fff8e9;color:#514536;
+}
+header{
+  background:#ffcb70;padding:24px 16px;text-align:center;
+  border-radius:0 0 28px 28px;
+}
+header h1{margin:5px;font-size:28px;color:#754c26}
+header p{margin:8px}
+main{max-width:760px;margin:22px auto;padding:0 16px}
+h2{font-size:19px}
+.grades{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+button{
+  border:0;border-radius:14px;padding:12px;
+  background:#fff;cursor:pointer;font-size:15px;
+  color:#514536;box-shadow:0 2px 7px #00000010;
+}
+button:active{transform:scale(.97)}
+.grades button.active{background:#ffb84e;color:white}
+.card{
+  margin-top:20px;background:white;border-radius:24px;
+  padding:25px 18px;text-align:center;
+  box-shadow:0 5px 18px #00000010;
+}
+.emoji{font-size:65px;margin:12px}
+.word{font-size:35px;font-weight:bold;color:#f19b38}
+.meaning{font-size:21px;margin:12px}
+.sub{color:#999;font-size:14px}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.actions button{background:#fff0d6}
+.primary{background:#ffb84e!important;color:white!important}
+.section{
+  background:white;margin-top:20px;padding:20px;
+  border-radius:22px;
+}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.options button{border:1px solid #f2e5d3}
+.result{margin-top:14px;font-weight:bold;text-align:center}
+footer{text-align:center;padding:25px;color:#ad9679;font-size:13px}
+</style>
+</head>
+<body>
+
+<header>
+  <div style="font-size:42px">🦊 📚 ⭐</div>
+  <h1>ABC 快乐单词屋</h1>
+  <p>每天学一点，英语进步看得见！</p>
+</header>
+
+<main>
+  <h2>🌈 选择你的年级</h2>
+  <div class="grades">
+    <button class="active" onclick="changeGrade(3,this)">三年级</button>
+    <button onclick="changeGrade(4,this)">四年级</button>
+    <button onclick="changeGrade(5,this)">五年级</button>
+    <button onclick="changeGrade(6,this)">六年级</button>
+  </div>
+
+  <div class="card">
+    <div class="sub" id="progress">三年级 · 单词学习</div>
+    <div class="emoji" id="emoji">🐱</div>
+    <div class="word" id="word">cat</div>
+    <div class="meaning" id="meaning">小猫</div>
+    <div class="sub" id="example">I like cats.</div>
+    <div class="actions">
+      <button onclick="speak()">🔊 听发音</button>
+      <button onclick="toggleMeaning()">👀 隐藏释义</button>
+      <button onclick="nextWord()">➡️ 下一个</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🎮 趣味小测试</h2>
+    <p id="question">cat 的中文意思是什么？</p>
+    <div class="options" id="options"></div>
+    <div class="result" id="result">答对题目可以获得星星哦！</div>
+    <div style="text-align:center;margin-top:14px">
+      <button class="primary" onclick="newQuestion()">换一道题</button>
+    </div>
+  </div>
+
+  <div class="section" style="text-align:center">
+    <div style="font-size:35px">🏆 ⭐</div>
+    <h2>我的学习成果</h2>
+    <p id="score">答对次数：0 次</p>
+  </div>
+</main>
+
+<footer>ABC快乐单词屋 · 让英语学习更有趣 ❤️</footer>
+
+<script>
+const books = {
+  3:[
+    ["cat","小猫","🐱","I like cats."],
+    ["dog","小狗","🐶","This is a dog."],
+    ["apple","苹果","🍎","I like apples."],
+    ["book","书","📚","This is my book."],
+    ["bird","小鸟","🐦","A bird can fly."]
+  ],
+  4:[
+    ["school","学校","🏫","I go to school."],
+    ["friend","朋友","👫","He is my friend."],
+    ["family","家庭","👨‍👩‍👧","I love my family."],
+    ["water","水","💧","I drink water."],
+    ["happy","开心的","😊","I am happy."]
+  ],
+  5:[
+    ["animal","动物","🐼","I love animals."],
+    ["weather","天气","🌤️","The weather is nice."],
+    ["library","图书馆","📚","I read in the library."],
+    ["beautiful","美丽的","🌸","It is beautiful."],
+    ["holiday","假期","🏖️","I like holidays."]
+  ],
+  6:[
+    ["museum","博物馆","🏛️","Let's visit the museum."],
+    ["science","科学","🔬","I like science."],
+    ["travel","旅行","✈️","I want to travel."],
+    ["healthy","健康的","💪","Keep healthy."],
+    ["interesting","有趣的","🎨","It is interesting."]
+  ]
+};
+
+let grade=3,index=0,correct=0,answered=false;
+let currentQuestion=null;
+
+function changeGrade(g,btn){
+  grade=g;index=0;
+  document.querySelectorAll(".grades button").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  showWord();newQuestion();
+}
+
+function showWord(){
+  let w=books[grade][index];
+  document.getElementById("word").textContent=w[0];
+  document.getElementById("emoji").textContent=w[2];
+  document.getElementById("meaning").textContent=w[1];
+  document.getElementById("example").textContent=w[3];
+  document.getElementById("progress").textContent=
+    grade+"年级 · 第"+(index+1)+"个单词";
+  document.getElementById("meaning").style.display="block";
+}
+
+function nextWord(){
+  index=(index+1)%books[grade].length;
+  showWord();
+}
+
+function toggleMeaning(){
+  let m=document.getElementById("meaning");
+  m.style.display=m.style.display==="none"?"block":"none";
+}
+
+function speak(){
+  if(!("speechSynthesis" in window)){
+    alert("当前浏览器暂不支持语音播放");
+    return;
+  }
+  let utterance=new SpeechSynthesisUtterance(
+    books[grade][index][0]
+  );
+  utterance.lang="en-US";
+  utterance.rate=0.8;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utterance);
+}
+
+function newQuestion(){
+  answered=false;
+  let all=books[grade];
+  let q=all[Math.floor(Math.random()*all.length)];
+  currentQuestion=q;
+  document.getElementById("question").textContent=
+    "单词 "+q[0]+" 的中文意思是什么？";
+  let others=all.filter(w=>w!==q);
+  others.sort(()=>Math.random()-0.5);
+  let choices=[q,...others.slice(0,3)];
+  choices.sort(()=>Math.random()-0.5);
+  let box=document.getElementById("options");
+  box.innerHTML="";
+  choices.forEach(w=>{
+    let b=document.createElement("button");
+    b.textContent=w[1];
+    b.onclick=()=>checkAnswer(w,b);
+    box.appendChild(b);
+  });
+  document.getElementById("result").textContent="选一个你认为正确的答案吧！";
+}
+
+function checkAnswer(w,btn){
+  if(answered)return;
+  answered=true;
+  if(w===currentQuestion){
+    correct++;
+    document.getElementById("result").textContent="🎉 太棒了！答对啦！+1颗星星";
+  }else{
+    document.getElementById("result").textContent=
+      "💪 再接再厉！正确答案是："+currentQuestion[1];
+  }
+  document.getElementById("score").textContent=
+    "答对次数："+correct+" 次";
+}
+
+showWord();
+newQuestion();
+</script>
+</body>
+</html>
