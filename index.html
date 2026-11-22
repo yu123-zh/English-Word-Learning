@@ -164,15 +164,27 @@ footer{text-align:center;color:#a18c70;padding:25px;font-size:13px}
   教材词汇将依据正式教材逐册核对补充。
 </footer>
 
-<script>
-const words=[
- {en:"cat",cn:"小猫",pic:"🐱",example:"I like cats."},
- {en:"dog",cn:"小狗",pic:"🐶",example:"This is a dog."},
- {en:"bird",cn:"小鸟",pic:"🐦",example:"I see a bird."},
- {en:"apple",cn:"苹果",pic:"🍎",example:"I like apples."},
- {en:"book",cn:"书",pic:"📚",example:"This is my book."},
- {en:"fish",cn:"鱼",pic:"🐟",example:"I like fish."}
-];
+// 四年级人教版 PEP 单词库
+const wordBooks = {
+  "4-上册": [
+    {en:"classroom",cn:"教室",pic:"🏫",example:"This is my classroom."},
+    {en:"window",cn:"窗户",pic:"🪟",example:"Open the window."},
+    {en:"door",cn:"门",pic:"🚪",example:"Open the door."},
+    {en:"picture",cn:"图画",pic:"🖼️",example:"Look at the picture."},
+    {en:"blackboard",cn:"黑板",pic:"📋",example:"Clean the blackboard."}
+  ],
+
+  "4-下册": [
+    {en:"computer",cn:"电脑",pic:"💻",example:"This is my computer."},
+    {en:"homework",cn:"家庭作业",pic:"📖",example:"I do my homework."},
+    {en:"bedroom",cn:"卧室",pic:"🛏️",example:"This is my bedroom."},
+    {en:"kitchen",cn:"厨房",pic:"🍳",example:"The kitchen is big."},
+    {en:"garden",cn:"花园",pic:"🌷",example:"I like the garden."}
+  ]
+};
+
+// 当前使用的单词库
+let words = wordBooks["4-上册"];
 
 let grade=3;
 let book="上册";
