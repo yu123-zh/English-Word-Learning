@@ -117,7 +117,7 @@ footer{text-align:center;color:#a18c70;padding:25px;font-size:13px}
     <button class="active" onclick="chooseBook('上册',this)">上册</button>
     <button onclick="chooseBook('下册',this)">下册</button>
   </div>
-  <p id="selection">当前选择：三年级上册</p>
+  <p id="selection">当前选择：4年级上册</p>
 </section>
 
 <section class="panel">
@@ -226,7 +226,7 @@ function switchWords(){
  if(wordBooks[key]){
   words=wordBooks[key];
   index=0;
-  seen=new Set();
+  load();
 
   showWord();
   newQuestion();
@@ -297,10 +297,14 @@ function toggleMeaning(){
  document.getElementById("meaning").classList.toggle("hidden");
 }
 function save(){
+ let key="abc-"+grade+"-"+book+"-";
+
+ localStorage.setItem(key+"learned",learned);
+ localStorage.setItem(key+"seen",JSON.stringify([...seen]));
+
  localStorage.setItem("abc-stars",stars);
- localStorage.setItem("abc-learned",learned);
  localStorage.setItem("abc-correct",correct);
- localStorage.setItem("abc-seen",JSON.stringify([...seen]));
+
  updateStats();
 }
 function updateStats(){
@@ -340,12 +344,18 @@ function checkAnswer(ok,btn,box,answer){
  save();
 }
 function load(){
- learned=Number(localStorage.getItem("abc-learned")||0);
+ let key="abc-"+grade+"-"+book+"-";
+
+ learned=Number(localStorage.getItem(key+"learned")||0);
  stars=Number(localStorage.getItem("abc-stars")||0);
  correct=Number(localStorage.getItem("abc-correct")||0);
+
  try{
-  seen=new Set(JSON.parse(localStorage.getItem("abc-seen")||"[]"));
- }catch(e){seen=new Set();}
+  seen=new Set(JSON.parse(localStorage.getItem(key+"seen")||"[]"));
+ }catch(e){
+  seen=new Set();
+ }
+
  updateStats();
 }
 load();
