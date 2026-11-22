@@ -197,15 +197,43 @@ let seen=new Set();
 
 function chooseGrade(n,btn){
  grade=n;
+
  document.querySelectorAll("#grades button").forEach(b=>b.classList.remove("active"));
  btn.classList.add("active");
- updateSelection();
+
+ switchWords();
 }
+
 function chooseBook(n,btn){
  book=n;
+
  document.querySelectorAll(".book-list button").forEach(b=>b.classList.remove("active"));
  btn.classList.add("active");
+
+ switchWords();
+}
+
+function updateSelection(){
+ document.getElementById("selection").textContent=
+ "当前选择："+grade+"年级"+book;
+}
+
+function switchWords(){
  updateSelection();
+
+ let key=grade+"-"+book;
+
+ if(wordBooks[key]){
+  words=wordBooks[key];
+  index=0;
+  seen=new Set();
+
+  showWord();
+  newQuestion();
+ }else{
+  document.getElementById("unit").textContent=
+  "该年级的词库暂未开放";
+ }
 }
 function updateSelection(){
  document.getElementById("selection").textContent=
