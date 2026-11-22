@@ -240,23 +240,33 @@ function updateSelection(){
  "当前选择："+grade+"年级"+book;
 }
 function showWord(){
+ if(!words || words.length===0){
+  document.getElementById("unit").textContent="当前词库暂无单词";
+  return;
+ }
+
  let w=words[index];
+
  document.getElementById("word").textContent=w.en;
  document.getElementById("meaning").textContent=w.cn;
  document.getElementById("meaning").classList.remove("hidden");
  document.getElementById("picture").textContent=w.pic;
  document.getElementById("example").textContent=w.example;
+
  document.getElementById("unit").textContent=
- "演示词汇 · "+grade+"年级"+book;
+ "人教版PEP · "+grade+"年级"+book;
+
  if(!seen.has(w.en)){
   seen.add(w.en);
   learned++;
   save();
  }
+
  document.getElementById("progressBar").style.width=
  (seen.size/words.length*100)+"%";
+
  document.getElementById("progressText").textContent=
- "已经学习 "+seen.size+" 个不同的演示单词";
+ "已经学习 "+seen.size+" 个不同的单词";
 }
 function nextWord(){
  index=(index+1)%words.length;
