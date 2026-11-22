@@ -273,15 +273,24 @@ function nextWord(){
  showWord();
 }
 function speak(){
+ if(!words || words.length===0){
+  alert("当前没有可朗读的单词");
+  return;
+ }
+
  let text=words[index].en;
+
  if(!("speechSynthesis" in window)){
   alert("当前浏览器不支持语音功能");
   return;
  }
+
  speechSynthesis.cancel();
+
  let utterance=new SpeechSynthesisUtterance(text);
  utterance.lang="en-US";
  utterance.rate=0.8;
+
  speechSynthesis.speak(utterance);
 }
 function toggleMeaning(){
